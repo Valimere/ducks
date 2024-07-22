@@ -1,0 +1,10 @@
+services:
+  web:
+    build: .
+    ports:
+      - "5001:5001"
+    volumes:
+      - .:/app
+      - ./data:/app/data
+    environment:
+      - CONFIG_FILE=config.Config

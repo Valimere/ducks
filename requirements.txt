@@ -1,0 +1,6 @@
+flask
+flask-restful
+flask-injector
+flask-restx
+pandas
+duckdb
