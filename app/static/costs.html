@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Cost & Usage Report</title>
+</head>
+<body>
+    <h1>AWS Cost & Usage Report</h1>
+
+    <div>
+        <h2>Undiscounted Cost</h2>
+        <input type="text" id="undiscountedServiceCode" placeholder="Enter Service Code">
+        <button onclick="getUndiscountedCost()">Get Undiscounted Cost</button>
+        <p id="undiscountedCost"></p>
+    </div>
+
+    <div>
+        <h2>Discounted Cost</h2>
+        <input type="text" id="discountedServiceCode" placeholder="Enter Service Code">
+        <button onclick="getDiscountedCost()">Get Discounted Cost</button>
+        <p id="discountedCost"></p>
+    </div>
+
+    <div>
+        <h2>Blended Discount Rate</h2>
+        <button onclick="getBlendedDiscountRate()">Get Blended Discount Rate</button>
+        <p id="blendedDiscountRate"></p>
+    </div>
+
+    <script>
+        async function getUndiscountedCost() {
+            const serviceCode = document.getElementById('undiscountedServiceCode').value;
+            const response = await fetch(`/api/cost/undiscounted/${serviceCode}`);
+            const data = await response.json();
+            document.getElementById('undiscountedCost').innerText = `Undiscounted Cost: $${data.undiscounted_cost}`;
+        }
+
+        async function getDiscountedCost() {
+            const serviceCode = document.getElementById('discountedServiceCode').value;
+            const response = await fetch(`/api/cost/discounted/${serviceCode}`);
+            const data = await response.json();
+            document.getElementById('discountedCost').innerText = `Discounted Cost: $${data.discounted_cost}`;
+        }
+
+        async function getBlendedDiscountRate() {
+            const response = await fetch(`/api/cost/blended-discount-rate`);
+            const data = await response.json();
+            document.getElementById('blendedDiscountRate').innerText = `Blended Discount Rate: ${(data.blended_discount_rate * 100).toFixed(2)}%`;
+        }
+    </script>
+</body>
+</html>

@@ -11,6 +11,9 @@ class DuckDBStore:
         self.connection = duckdb.connect(Config.DUCKDB_PATH)
         self.logger = logging.getLogger('DuckDBStore')
 
+    def close_connection(self):
+        self.connection.close()
+
     def ingest_parquet(self, file_path):
         try:
             self.connection.execute("""

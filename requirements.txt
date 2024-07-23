@@ -4,3 +4,4 @@ flask-injector
 flask-restx
 pandas
 duckdb
+Werkzeug

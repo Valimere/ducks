@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, send_file
+from flask import Blueprint, jsonify, send_from_directory, current_app
 from flask_restx import Api, Resource, reqparse
 from werkzeug.datastructures import FileStorage
 from store import DuckDBStore
@@ -6,12 +6,13 @@ from log import Logger
 import os
 
 main = Blueprint('main', __name__, static_folder='/app/app/static')
-api = Api(main, version='1.0', title='DuckDB API', description='A simple DuckDB API', doc='/api/docs')
+api = Api(main, version='0.1', title='DuckDB API', description='A simple DuckDB API', doc='/api/docs')
 
 upload_parser = reqparse.RequestParser()
 upload_parser.add_argument('file', location='files', type=FileStorage, required=True)
 
 ns = api.namespace('api', description='Operations')
+
 
 @ns.route('/upload')
 class Upload(Resource):
@@ -42,6 +43,7 @@ class Upload(Resource):
             logger.error(f'Error uploading and ingesting file: {e}')
             return {'message': 'Error uploading and ingesting file'}, 500
 
+
 @ns.route('/cost/undiscounted/<string:service_code>')
 class UndiscountedCost(Resource):
     def get(self, service_code):
@@ -52,6 +54,7 @@ class UndiscountedCost(Resource):
         except Exception as e:
             Logger().logger.error(f'Error querying undiscounted cost: {e}')
             return {'message': 'Error querying undiscounted cost'}, 500
+
 
 @ns.route('/cost/discounted/<string:service_code>')
 class DiscountedCost(Resource):
@@ -72,6 +75,7 @@ class DiscountedCost(Resource):
             Logger().logger.error(f'Error querying discounted cost: {e}')
             return {'message': 'Error querying discounted cost'}, 500
 
+
 @ns.route('/cost/blended-discount-rate')
 class BlendedDiscountRate(Resource):
     def get(self):
@@ -82,6 +86,7 @@ class BlendedDiscountRate(Resource):
         except Exception as e:
             Logger().logger.error(f'Error querying blended discount rate: {e}')
             return {'message': 'Error querying blended discount rate'}, 500
+
 
 @ns.route('/cost/all')
 class AllCosts(Resource):
@@ -94,8 +99,5 @@ class AllCosts(Resource):
             Logger().logger.error(f'Error querying all costs: {e}')
             return {'message': 'Error querying all costs'}, 500
 
-@main.route('/')
-def index():
-    return send_file('/app/app/static/index.html')
 
 api.add_namespace(ns)

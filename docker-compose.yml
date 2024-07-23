@@ -1,6 +1,7 @@
 services:
   web:
     build: .
+    stop_grace_period: 3s
     ports:
       - "5001:5001"
     volumes:
